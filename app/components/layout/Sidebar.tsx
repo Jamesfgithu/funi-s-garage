@@ -114,3 +114,11 @@ export function Sidebar() {
     </div>
   )
 }
+// Add this link in your navigation
+<Link 
+  href="/dashboard/email-generator"
+  className="flex items-center gap-3 px-4 py-3 text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
+>
+  <Zap className="h-5 w-5" />
+  Email Generator
+</Link>
