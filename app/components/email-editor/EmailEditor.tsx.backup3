@@ -17,10 +17,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Bold, Italic, Link as LinkIcon, Undo, Redo, Zap } from 'lucide-react';
 import { SAFELIST_TEMPLATES } from '../../lib/knowledge-base';
-import { useState } from 'react';
 
-// Add TypeScript type for template keys
-type TemplateKey = keyof typeof SAFELIST_TEMPLATES;
+import { useState } from 'react';
 
 const theme = {
   text: {
@@ -42,7 +40,7 @@ const initialConfig = {
 function EditorToolbar() {
   const [editor] = useLexicalComposerContext();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateKey>('pas_pain_point');
+  const [selectedTemplate, setSelectedTemplate] = useState('pas_pain_point');
 
   const formatBold = () => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
   const formatItalic = () => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
@@ -54,8 +52,8 @@ function EditorToolbar() {
   const handleGenerateEmail = async () => {
     setIsGenerating(true);
     try {
-      // Get the selected template from your knowledge base with proper typing
-      const template = SAFELIST_TEMPLATES[selectedTemplate as TemplateKey];
+      // Get the selected template from your knowledge base
+      const template = SAFELIST_TEMPLATES[selectedTemplate];
       
       if (!template) {
         throw new Error('Template not found');
@@ -151,7 +149,7 @@ P.S. This could be the breakthrough you've been waiting for. Don't let another d
         {/* Template Selection */}
         <select 
           value={selectedTemplate}
-          onChange={(e) => setSelectedTemplate(e.target.value as TemplateKey)}
+          onChange={(e) => setSelectedTemplate(e.target.value)}
           className="px-3 py-2 border border-border rounded-md bg-background text-foreground"
         >
           <option value="pas_pain_point">P.A.S. Pain Point (Extremely High)</option>
