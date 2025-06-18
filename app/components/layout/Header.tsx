@@ -1,19 +1,25 @@
-'use client'
+"use client"; // This component now uses a hook, so it must be a client component
 
-export function Header() {
+import React from 'react';
+import { useHeader } from '@/app/context/HeaderContext'; // Import the hook
+
+const Header = () => {
+  const { title, subtitle } = useHeader(); // Get the dynamic title and subtitle
+
   return (
-    <header className="bg-card border-b border-border px-6 py-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Email Generator</h1>
-          <p className="text-muted-foreground">Generate high-converting safelist emails with world-class AI copywriting</p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <div className="text-sm text-muted-foreground">
-            Beta Testing Mode
-          </div>
-        </div>
+    <header className="flex h-16 items-center border-b bg-background px-4 md:px-6">
+      <div>
+        <h1 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">
+          {title} {/* Use the dynamic title */}
+        </h1>
+        {subtitle && (
+          <p className="text-sm text-muted-foreground">
+            {subtitle} {/* Conditionally render the subtitle */}
+          </p>
+        )}
       </div>
     </header>
-  )
-}
+  );
+};
+
+export default Header;
