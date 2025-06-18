@@ -10,12 +10,10 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
-import { useToast } from '@/hooks/use-toast';
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,11 +24,6 @@ export function LoginForm() {
     const userEmailFromQuery = searchParams.get('email');
 
     if (emailVerifiedQueryParam === 'true') {
-      toast({
-        title: "Email Verified!",
-        description: "Your email address has been successfully verified. Please log in.",
-        duration: 7000,
-      });
       if (userEmailFromQuery && !email) {
         setEmail(userEmailFromQuery);
       }
@@ -38,11 +31,6 @@ export function LoginForm() {
       // Check if user is already authenticated and verified, then redirect
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user && user.emailVerified) {
-          toast({
-            title: "Authenticated & Verified",
-            description: "Redirecting to your dashboard...",
-            duration: 3000,
-          });
           setTimeout(() => {
             router.push("/dashboard");
           }, 1500);
@@ -50,7 +38,7 @@ export function LoginForm() {
       });
       return () => unsubscribe();
     }
-  }, [searchParams, router, toast, email]);
+  }, [searchParams, router, email]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -94,20 +82,11 @@ export function LoginForm() {
         userFriendlyMessage = "Please verify your email before logging in. Check your inbox or resend verification from the signup/verify page.";
         console.warn(`LoginForm: User email not verified for ${user.email}.`);
         setError(userFriendlyMessage);
-        toast({
-          title: "Email Not Verified",
-          description: userFriendlyMessage,
-          variant: "destructive",
-        });
         // Redirect to verify-email page if email is not verified
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);
         return; 
       } else {
         console.log(`LoginForm: User email ${user.email} is verified. Proceeding to dashboard.`);
-        toast({
-          title: "Login Successful!",
-          description: "Welcome back! Redirecting to dashboard...",
-        });
         router.push("/dashboard");
       }
       console.log("LoginForm: Exiting main try block (after success/email verification check).");
@@ -155,11 +134,6 @@ export function LoginForm() {
       setError(userFriendlyMessage);
       console.error(consoleMessage, e instanceof Error ? e.stack : '(no stack trace)'); 
 
-      toast({
-        title: `Login Failed (${firebaseErrorCode})`,
-        description: userFriendlyMessage,
-        variant: "destructive",
-      });
       console.log("LoginForm: Exiting main catch block.");
     } finally {
       console.log("LoginForm: Entering main finally block.");
@@ -188,6 +162,7 @@ export function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
               autoComplete="email"
+              className="bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
             />
           </div>
           <div className="space-y-2">
@@ -205,6 +180,7 @@ export function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               autoComplete="current-password"
+              className="bg-white dark:bg-gray-800 text-black dark:text-white border-gray-300 dark:border-gray-600"
             />
           </div>
           {error && <p className="text-sm text-destructive mt-2">{error}</p>}

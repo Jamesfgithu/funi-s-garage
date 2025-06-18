@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "safelight-ai-pro"
-  }
+    "default": "safelight-ai-pro",
+    "staging": "safelight-ai-pro"
+  },
+  "targets": {},
+  "etags": {}
 }
