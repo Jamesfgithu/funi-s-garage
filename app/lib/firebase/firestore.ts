@@ -67,7 +67,12 @@ export const addSafelistLink = async (
       lastSubmitted: null,
     };
 
-    const safelistLinksCollection = collection(db, 'users', userId, 'safelistLinks');
+    const safelistLinksCollection = collection(
+      db,
+      'users',
+      userId,
+      'safelistLinks'
+    );
     const docRef = await addDoc(safelistLinksCollection, docData);
 
     console.log('Document written with ID: ', docRef.id);
@@ -105,7 +110,7 @@ export const getDashboardStats = async (userId: string) => {
     const linksCollection = collection(db, 'users', userId, 'safelistLinks');
     const q = query(linksCollection, where('userId', '==', userId));
     const totalLinksSnapshot = await getCountFromServer(q);
-    
+
     return {
       totalLinks: totalLinksSnapshot.data().count,
     };
@@ -120,16 +125,21 @@ export const getDashboardStats = async (userId: string) => {
  * @param userId The user's ID
  * @returns Promise with array of safelist links
  */
-export const getSafelistLinks = async (userId: string): Promise<SafelistLink[]> => {
+export const getSafelistLinks = async (
+  userId: string
+): Promise<SafelistLink[]> => {
   try {
     const linksCollection = collection(db, 'users', userId, 'safelistLinks');
     const q = query(linksCollection, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
-    
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    } as SafelistLink));
+
+    return querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as SafelistLink
+    );
   } catch (error) {
     console.error('Error fetching safelist links: ', error);
     throw new Error('Failed to fetch safelist links.');
@@ -142,10 +152,9 @@ export const getSafelistLinks = async (userId: string): Promise<SafelistLink[]> 
  * @returns Promise with array of safelist links
  */
 
-
-
-
-export const getUserSafelistLinks = async (userId: string): Promise<SafelistLink[]> => {
+export const getUserSafelistLinks = async (
+  userId: string
+): Promise<SafelistLink[]> => {
   return getSafelistLinks(userId);
 };
 
@@ -160,7 +169,7 @@ export const calculateReadiness = (link: SafelistLink | null) => {
     return {
       status: 'unknown',
       message: 'Invalid link data',
-      daysUntilReady: 0
+      daysUntilReady: 0,
     };
   }
 
@@ -168,32 +177,33 @@ export const calculateReadiness = (link: SafelistLink | null) => {
     return {
       status: 'ready',
       message: 'Ready to submit',
-      daysUntilReady: 0
+      daysUntilReady: 0,
     };
   }
 
-  const lastSubmittedDate = link.lastSubmitted instanceof Date 
-    ? link.lastSubmitted 
-    : new Date(link.lastSubmitted.seconds * 1000);
-  
+  const lastSubmittedDate =
+    link.lastSubmitted instanceof Date
+      ? link.lastSubmitted
+      : new Date(link.lastSubmitted.seconds * 1000);
+
   const daysSinceSubmission = Math.floor(
     (Date.now() - lastSubmittedDate.getTime()) / (1000 * 60 * 60 * 24)
   );
-  
+
   const frequency = link.frequency || 7; // Default to 7 days if not specified
   const daysUntilReady = Math.max(0, frequency - daysSinceSubmission);
-  
+
   if (daysUntilReady === 0) {
     return {
       status: 'ready',
       message: 'Ready to submit',
-      daysUntilReady: 0
+      daysUntilReady: 0,
     };
   } else {
     return {
       status: 'waiting',
       message: `Wait ${daysUntilReady} more day${daysUntilReady > 1 ? 's' : ''}`,
-      daysUntilReady
+      daysUntilReady,
     };
   }
 };
@@ -205,8 +215,10 @@ export const calculateReadiness = (link: SafelistLink | null) => {
  * @returns Promise that resolves when deletion is complete
  */
 
-
-export const deleteSafelistLink = async (userId: string, linkId: string): Promise<void> => {
+export const deleteSafelistLink = async (
+  userId: string,
+  linkId: string
+): Promise<void> => {
   try {
     const linkDocRef = doc(db, 'users', userId, 'safelistLinks', linkId);
     await deleteDoc(linkDocRef);

@@ -26,34 +26,34 @@ export default function EditorToolbar() {
   };
 
   return (
-    <div className="flex items-center gap-2 p-3 border-b bg-gray-50">
+    <div className="flex items-center gap-2 border-b bg-gray-50 p-3">
       <button
         onClick={formatBold}
-        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-          isBold 
-            ? 'bg-blue-600 text-white' 
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
+        className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+          isBold
+            ? 'bg-blue-600 text-white'
+            : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100'
         }`}
       >
         <strong>B</strong>
       </button>
-      
+
       <button
         onClick={formatItalic}
-        className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-          isItalic 
-            ? 'bg-blue-600 text-white' 
-            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
+        className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+          isItalic
+            ? 'bg-blue-600 text-white'
+            : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100'
         }`}
       >
         <em>I</em>
       </button>
 
-      <div className="w-px h-6 bg-gray-300 mx-1"></div>
+      <div className="mx-1 h-6 w-px bg-gray-300"></div>
 
       <button
         onClick={insertLink}
-        className="px-3 py-1 rounded text-sm font-medium bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors"
+        className="rounded border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
       >
         🔗 Link
       </button>

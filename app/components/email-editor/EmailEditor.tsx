@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -12,7 +12,14 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { ListItemNode, ListNode } from '@lexical/list';
 import { LinkNode, AutoLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { FORMAT_TEXT_COMMAND, $getRoot, UNDO_COMMAND, REDO_COMMAND, $createParagraphNode, $createTextNode } from 'lexical';
+import {
+  FORMAT_TEXT_COMMAND,
+  $getRoot,
+  UNDO_COMMAND,
+  REDO_COMMAND,
+  $createParagraphNode,
+  $createTextNode,
+} from 'lexical';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Bold, Italic, Link as LinkIcon, Undo, Redo, Zap } from 'lucide-react';
@@ -35,17 +42,26 @@ const theme = {
 const initialConfig = {
   namespace: 'SafelistEditor',
   theme,
-  nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode, AutoLinkNode],
+  nodes: [
+    HeadingNode,
+    ListNode,
+    ListItemNode,
+    QuoteNode,
+    LinkNode,
+    AutoLinkNode,
+  ],
   onError: (error: Error) => console.error('Lexical Error:', error),
 };
 
 function EditorToolbar() {
   const [editor] = useLexicalComposerContext();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateKey>('pas_pain_point');
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<TemplateKey>('pas_pain_point');
 
   const formatBold = () => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-  const formatItalic = () => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+  const formatItalic = () =>
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
   const insertLink = () => {
     const url = prompt('Enter URL:');
     if (url) editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
@@ -56,7 +72,7 @@ function EditorToolbar() {
     try {
       // Get the selected template from your knowledge base with proper typing
       const template = SAFELIST_TEMPLATES[selectedTemplate as TemplateKey];
-      
+
       if (!template) {
         throw new Error('Template not found');
       }
@@ -64,7 +80,7 @@ function EditorToolbar() {
       // Create professional safelist email using your proven template
       const professionalEmail = `Fellow entrepreneur,
 
-${template.opening || "I just discovered something that could change everything for you."}
+${template.opening || 'I just discovered something that could change everything for you.'}
 
 Here's what caught my attention: This breakthrough system delivers exactly what we've all been looking for - real results, not empty promises.
 
@@ -87,11 +103,11 @@ P.S. ${template.ps || "This could be the breakthrough you've been waiting for. T
       editor.update(() => {
         const root = $getRoot();
         root.clear();
-        
+
         // Split by paragraphs and create proper nodes
         const paragraphs = professionalEmail.split('\n\n');
-        
-        paragraphs.forEach(paragraphText => {
+
+        paragraphs.forEach((paragraphText) => {
           if (paragraphText.trim()) {
             const paragraph = $createParagraphNode();
             const textNode = $createTextNode(paragraphText.trim());
@@ -100,10 +116,9 @@ P.S. ${template.ps || "This could be the breakthrough you've been waiting for. T
           }
         });
       });
-      
     } catch (error) {
       console.error('AI Generation error:', error);
-      
+
       // Fallback to basic professional email
       const fallbackEmail = `Fellow entrepreneur,
 
@@ -129,9 +144,9 @@ P.S. This could be the breakthrough you've been waiting for. Don't let another d
       editor.update(() => {
         const root = $getRoot();
         root.clear();
-        
+
         const paragraphs = fallbackEmail.split('\n\n');
-        paragraphs.forEach(paragraphText => {
+        paragraphs.forEach((paragraphText) => {
           if (paragraphText.trim()) {
             const paragraph = $createParagraphNode();
             const textNode = $createTextNode(paragraphText.trim());
@@ -146,53 +161,88 @@ P.S. This could be the breakthrough you've been waiting for. Don't let another d
   };
 
   return (
-    <div className="border-b border-border bg-muted/30 px-6 py-4">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="border-border bg-muted/30 border-b px-6 py-4">
+      <div className="mb-4 flex items-center gap-2">
         {/* Template Selection */}
-        <select 
+        <select
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value as TemplateKey)}
-          className="px-3 py-2 border border-border rounded-md bg-background text-foreground"
+          className="border-border bg-background text-foreground rounded-md border px-3 py-2"
         >
-          <option value="pas_pain_point">P.A.S. Pain Point (Extremely High)</option>
+          <option value="pas_pain_point">
+            P.A.S. Pain Point (Extremely High)
+          </option>
           <option value="bab_lead_magnet">B.A.B. Lead Magnet (High)</option>
           <option value="quick_find_mail">Quick Find & Mail (High)</option>
           <option value="direct_callout">Direct Callout (High)</option>
-          <option value="personal_story">Personal Story Bridge (Very High)</option>
+          <option value="personal_story">
+            Personal Story Bridge (Very High)
+          </option>
           <option value="damaging_admission">Damaging Admission (High)</option>
-          <option value="four_ps_product">4Ps Product Promotion (Very High)</option>
-          <option value="urgent_ps_reminder">Urgent P.S. Reminder (Extremely High)</option>
-          <option value="moving_parade">Moving Parade Re-engagement (High)</option>
+          <option value="four_ps_product">
+            4Ps Product Promotion (Very High)
+          </option>
+          <option value="urgent_ps_reminder">
+            Urgent P.S. Reminder (Extremely High)
+          </option>
+          <option value="moving_parade">
+            Moving Parade Re-engagement (High)
+          </option>
         </select>
       </div>
-      
+
       <div className="flex items-center gap-2">
         <Button
           onClick={handleGenerateEmail}
           disabled={isGenerating}
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          <Zap className="h-4 w-4 mr-2" />
+          <Zap className="mr-2 h-4 w-4" />
           {isGenerating ? 'Generating...' : 'Generate Email'}
         </Button>
-        
+
         <Separator orientation="vertical" className="h-6" />
-        
-        <Button variant="ghost" size="sm" onClick={formatBold} className="hover:bg-accent">
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={formatBold}
+          className="hover:bg-accent"
+        >
           <Bold className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={formatItalic} className="hover:bg-accent">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={formatItalic}
+          className="hover:bg-accent"
+        >
           <Italic className="h-4 w-4" />
         </Button>
         <Separator orientation="vertical" className="h-6" />
-        <Button variant="ghost" size="sm" onClick={insertLink} className="hover:bg-accent">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={insertLink}
+          className="hover:bg-accent"
+        >
           <LinkIcon className="h-4 w-4" />
         </Button>
         <Separator orientation="vertical" className="h-6" />
-        <Button variant="ghost" size="sm" onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)} className="hover:bg-accent">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
+          className="hover:bg-accent"
+        >
           <Undo className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)} className="hover:bg-accent">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
+          className="hover:bg-accent"
+        >
           <Redo className="h-4 w-4" />
         </Button>
       </div>
@@ -202,53 +252,65 @@ P.S. This could be the breakthrough you've been waiting for. Don't let another d
 
 export function EmailEditor() {
   return (
-    <div className="bg-card rounded-lg border border-border overflow-hidden">
+    <div className="bg-card border-border overflow-hidden rounded-lg border">
       <LexicalComposer initialConfig={initialConfig}>
         <EditorToolbar />
-        
+
         <div className="min-h-[500px] bg-white">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable 
-                className="min-h-[500px] p-6 outline-none text-black focus:ring-2 focus:ring-primary focus:ring-inset"
-                style={{ 
-                  maxWidth: '400px', 
-                  fontFamily: 'Arial, sans-serif', 
+              <ContentEditable
+                className="focus:ring-primary min-h-[500px] p-6 text-black outline-none focus:ring-2 focus:ring-inset"
+                style={{
+                  maxWidth: '400px',
+                  fontFamily: 'Arial, sans-serif',
                   fontSize: '14px',
                   lineHeight: '1.6',
                   color: '#000000',
-                  backgroundColor: '#ffffff'
+                  backgroundColor: '#ffffff',
                 }}
               />
             }
             placeholder={
-              <div className="absolute top-6 left-6 text-gray-400 pointer-events-none">
-                Select a template above and click Generate Email to create professional safelist content...
+              <div className="pointer-events-none absolute top-6 left-6 text-gray-400">
+                Select a template above and click Generate Email to create
+                professional safelist content...
               </div>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
         </div>
-        
+
         <HistoryPlugin />
         <AutoFocusPlugin />
         <LinkPlugin />
         <ListPlugin />
       </LexicalComposer>
-      
-      <div className="border-t border-border bg-muted/30 px-6 py-6">
+
+      <div className="border-border bg-muted/30 border-t px-6 py-6">
         <div className="flex justify-center gap-4">
-          <Button variant="outline" size="lg" className="min-w-[140px] h-12 font-medium">
+          <Button
+            variant="outline"
+            size="lg"
+            className="h-12 min-w-[140px] font-medium"
+          >
             Save Draft
           </Button>
-          <Button variant="outline" size="lg" className="min-w-[140px] h-12 font-medium">
+          <Button
+            variant="outline"
+            size="lg"
+            className="h-12 min-w-[140px] font-medium"
+          >
             Preview
           </Button>
-          <Button size="lg" className="min-w-[140px] h-12 font-medium bg-primary hover:bg-primary/90">
+          <Button
+            size="lg"
+            className="bg-primary hover:bg-primary/90 h-12 min-w-[140px] font-medium"
+          >
             Send Email
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }

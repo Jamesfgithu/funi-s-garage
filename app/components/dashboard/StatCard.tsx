@@ -6,10 +6,16 @@ interface StatCardProps {
   highlight?: boolean;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, highlight = false }) => {
+const StatCard: React.FC<StatCardProps> = ({
+  title,
+  value,
+  highlight = false,
+}) => {
   return (
-    <div className={`card ${highlight ? 'card-pulsing-glow' : ''} p-4 rounded-lg bg-white shadow-md flex flex-col items-center justify-center`}>
-      <h2 className="text-lg font-semibold mb-2">{title}</h2>
+    <div
+      className={`card ${highlight ? 'card-pulsing-glow' : ''} flex flex-col items-center justify-center rounded-lg bg-white p-4 shadow-md`}
+    >
+      <h2 className="mb-2 text-lg font-semibold">{title}</h2>
       <p className="text-3xl font-bold">{value}</p>
     </div>
   );

@@ -41,42 +41,45 @@ const initialConfig = {
 
 export default function SafelistEditor() {
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
+    <div className="overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm">
       <LexicalComposer initialConfig={initialConfig}>
         <EditorToolbar />
-        
+
         <div className="relative">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable 
+              <ContentEditable
                 className="min-h-[400px] p-4 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
-                style={{ 
-                  maxWidth: '400px', 
-                  fontFamily: 'Arial, sans-serif', 
+                style={{
+                  maxWidth: '400px',
+                  fontFamily: 'Arial, sans-serif',
                   fontSize: '14px',
-                  lineHeight: '1.5'
+                  lineHeight: '1.5',
                 }}
               />
             }
             placeholder={
-              <div className="absolute top-4 left-4 text-gray-400 pointer-events-none">
+              <div className="pointer-events-none absolute top-4 left-4 text-gray-400">
                 Start writing your safelist email...
                 <br />
-                <span className="text-xs">Try: Bold (Ctrl+B), Italic (Ctrl+I), Links</span>
+                <span className="text-xs">
+                  Try: Bold (Ctrl+B), Italic (Ctrl+I), Links
+                </span>
               </div>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
         </div>
-        
+
         <HistoryPlugin />
         <AutoFocusPlugin />
         <LinkPlugin />
         <ListPlugin />
       </LexicalComposer>
-      
-      <div className="bg-gray-50 px-4 py-2 text-xs text-gray-600 border-t">
-        💡 This editor formats content perfectly for safelist emails (400px max-width, Arial 14px)
+
+      <div className="border-t bg-gray-50 px-4 py-2 text-xs text-gray-600">
+        💡 This editor formats content perfectly for safelist emails (400px
+        max-width, Arial 14px)
       </div>
     </div>
   );

@@ -1,102 +1,112 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { SafelistLink } from "@/types/safelist";
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { SafelistLink } from '@/types/safelist';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 import {
-  Mail, 
-  Zap, 
-  BookOpen, 
-  Settings, 
+  Mail,
+  Zap,
+  BookOpen,
+  Settings,
   Home,
   List,
   ChevronDown,
   ChevronRight,
   ExternalLink,
-  Loader2
-} from 'lucide-react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '@/lib/firebase/config'
-import { getUserSafelistLinks, calculateReadiness } from '@/lib/firebase/safelist'
-import Image from 'next/image'
+  Loader2,
+} from 'lucide-react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '@/lib/firebase/config';
+import {
+  getUserSafelistLinks,
+  calculateReadiness,
+} from '@/lib/firebase/safelist';
+import Image from 'next/image';
 
 const navigation = [
   {
     name: 'Dashboard',
     href: '/dashboard',
     icon: Home,
-    description: 'Dashboard overview'
+    description: 'Dashboard overview',
   },
   {
     name: 'Email Generator',
     href: '/dashboard/email-generator',
     icon: Zap,
-    description: 'AI-powered email creation'
+    description: 'AI-powered email creation',
   },
   {
     name: 'Safelist Manager',
     href: '/dashboard/safelist-management',
     icon: List,
-    description: 'Streamline Your Links'
+    description: 'Streamline Your Links',
   },
   {
     name: 'Settings',
     href: '/dashboard/settings',
     icon: Settings,
-    description: 'Account & preferences'
-  }
-]
+    description: 'Account & preferences',
+  },
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
-  const [user] = useAuthState(auth)
-  const [safelistsExpanded, setSafelistsExpanded] = useState(false)
-  const [safelists, setSafelists] = useState<SafelistLink[]>([])
-  const [loadingSafelists, setLoadingSafelists] = useState(true)
+  const pathname = usePathname();
+  const [user] = useAuthState(auth);
+  const [safelistsExpanded, setSafelistsExpanded] = useState(false);
+  const [safelists, setSafelists] = useState<SafelistLink[]>([]);
+  const [loadingSafelists, setLoadingSafelists] = useState(true);
 
   useEffect(() => {
     async function fetchSafelists() {
       if (user) {
-        setLoadingSafelists(true)
+        setLoadingSafelists(true);
         try {
-          const userLinks = await getUserSafelistLinks(user.uid)
+          const userLinks = await getUserSafelistLinks(user.uid);
           // Sort alphabetically by name
-          const sortedLinks = userLinks.sort((a: SafelistLink, b: SafelistLink) => a.name.localeCompare(b.name))
-          setSafelists(sortedLinks)
+          const sortedLinks = userLinks.sort(
+            (a: SafelistLink, b: SafelistLink) => a.name.localeCompare(b.name)
+          );
+          setSafelists(sortedLinks);
         } catch (error) {
-          console.error('Error fetching safelists:', error)
+          console.error('Error fetching safelists:', error);
         } finally {
-          setLoadingSafelists(false)
+          setLoadingSafelists(false);
         }
       }
     }
 
-    fetchSafelists()
-  }, [user])
+    fetchSafelists();
+  }, [user]);
 
   const getStatusIndicator = (link: SafelistLink) => {
-    const { status } = calculateReadiness(link.lastSubmitted ?? null, link.frequency)
-    
+    const { status } = calculateReadiness(
+      link.lastSubmitted ?? null,
+      link.frequency
+    );
+
     switch (status) {
       case 'ready':
-        return <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-sm" />
+        return (
+          <div className="h-2 w-2 animate-pulse rounded-full bg-green-400 shadow-sm" />
+        );
       case 'soon':
-        return <div className="w-2 h-2 bg-amber-400 rounded-full shadow-sm" />
+        return <div className="h-2 w-2 rounded-full bg-amber-400 shadow-sm" />;
       case 'waiting':
-        return <div className="w-2 h-2 bg-red-400 rounded-full shadow-sm" />
+        return <div className="h-2 w-2 rounded-full bg-red-400 shadow-sm" />;
       default:
-        return <div className="w-2 h-2 bg-gray-500 rounded-full shadow-sm" />
+        return <div className="h-2 w-2 rounded-full bg-gray-500 shadow-sm" />;
     }
-  }
+  };
 
   return (
-    <div className="w-72 bg-gradient-to-br from-card to-card/95 backdrop-blur-sm border-r border-border/50 flex flex-col shadow-2xl">
+    <div className="from-card to-card/95 border-border/50 flex w-72 flex-col border-r bg-gradient-to-br shadow-2xl backdrop-blur-sm">
       {/* Enhanced Logo Section with Professional Styling */}
-      <div className="p-6 border-b border-border/50 bg-gradient-to-br from-primary/5 to-transparent">
+      <div className="border-border/50 from-primary/5 border-b bg-gradient-to-br to-transparent p-6">
         <div className="flex items-center space-x-3">
-          <div className="w-16 h-16 rounded-lg flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-200 overflow-hidden bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 backdrop-blur-sm">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-yellow-400/10 to-yellow-500/10 shadow-lg backdrop-blur-sm transition-shadow duration-200 hover:shadow-xl">
             <Image
               src="/logo.ico"
               alt="Safelist AI Pro Logo"
@@ -106,41 +116,45 @@ export function Sidebar() {
             />
           </div>
           <div>
-            <h1 className="text-lg font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+            <h1 className="bg-gradient-to-r from-white to-gray-200 bg-clip-text text-lg font-bold text-transparent">
               Safelist AI Pro
             </h1>
-            <p className="text-xs text-muted-foreground">Version 3</p>
+            <p className="text-muted-foreground text-xs">Version 3</p>
           </div>
         </div>
       </div>
 
       {/* Enhanced Professional Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      <nav className="flex-1 space-y-2 p-4">
         {navigation.map((item) => {
-          const isActive = pathname === item.href
+          const isActive = pathname === item.href;
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center space-x-3 px-4 py-3 rounded-lg text-sm transition-all duration-200 group shadow-sm hover:shadow-lg',
+                'group flex items-center space-x-3 rounded-lg px-4 py-3 text-sm shadow-sm transition-all duration-200 hover:shadow-lg',
                 isActive
-                  ? 'bg-gradient-to-br from-yellow-500 to-yellow-400 text-black font-medium shadow-lg hover:shadow-xl hover:scale-[1.02]'
-                  : 'text-muted-foreground bg-gradient-to-br from-card/50 to-card/30 hover:bg-gradient-to-br hover:from-primary/10 hover:to-primary/5 hover:text-white hover:shadow-md hover:border-primary/20 border border-transparent backdrop-blur-sm'
+                  ? 'bg-gradient-to-br from-yellow-500 to-yellow-400 font-medium text-black shadow-lg hover:scale-[1.02] hover:shadow-xl'
+                  : 'text-muted-foreground from-card/50 to-card/30 hover:from-primary/10 hover:to-primary/5 hover:border-primary/20 border border-transparent bg-gradient-to-br backdrop-blur-sm hover:bg-gradient-to-br hover:text-white hover:shadow-md'
               )}
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className="h-5 w-5" />
               <div className="flex-1">
                 <div className="font-medium">{item.name}</div>
-                <div className={cn(
-                  "text-xs transition-colors",
-                  isActive ? "text-black/70" : "text-muted-foreground/70 group-hover:text-gray-400"
-                )}>
+                <div
+                  className={cn(
+                    'text-xs transition-colors',
+                    isActive
+                      ? 'text-black/70'
+                      : 'text-muted-foreground/70 group-hover:text-gray-400'
+                  )}
+                >
                   {item.description}
                 </div>
               </div>
             </Link>
-          )
+          );
         })}
 
         {/* Enhanced My Safelists Dropdown with Professional List Icon */}
@@ -148,33 +162,35 @@ export function Sidebar() {
           <div className="mt-6">
             <button
               onClick={() => setSafelistsExpanded(!safelistsExpanded)}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm transition-all duration-200 group text-muted-foreground bg-gradient-to-br from-card/50 to-card/30 hover:bg-gradient-to-br hover:from-primary/10 hover:to-primary/5 hover:text-white hover:shadow-md hover:border-primary/20 border border-transparent backdrop-blur-sm shadow-sm hover:shadow-lg"
+              className="group text-muted-foreground from-card/50 to-card/30 hover:from-primary/10 hover:to-primary/5 hover:border-primary/20 flex w-full items-center space-x-3 rounded-lg border border-transparent bg-gradient-to-br px-4 py-3 text-sm shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-gradient-to-br hover:text-white hover:shadow-lg hover:shadow-md"
             >
               {safelistsExpanded ? (
-                <ChevronDown className="w-4 h-4 group-hover:text-white transition-colors duration-200" />
+                <ChevronDown className="h-4 w-4 transition-colors duration-200 group-hover:text-white" />
               ) : (
-                <ChevronRight className="w-4 h-4 group-hover:text-white transition-colors duration-200" />
+                <ChevronRight className="h-4 w-4 transition-colors duration-200 group-hover:text-white" />
               )}
-              <List className="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors duration-200" />
+              <List className="h-5 w-5 text-blue-400 transition-colors duration-200 group-hover:text-blue-300" />
               <div className="flex-1">
                 <div className="font-medium">My Safelists</div>
-                <div className="text-xs text-muted-foreground/70 group-hover:text-gray-400">
+                <div className="text-muted-foreground/70 text-xs group-hover:text-gray-400">
                   Quick access to your links
                 </div>
               </div>
-              {loadingSafelists && <Loader2 className="w-3 h-3 animate-spin text-blue-400" />}
+              {loadingSafelists && (
+                <Loader2 className="h-3 w-3 animate-spin text-blue-400" />
+              )}
             </button>
 
             {/* Enhanced Safelists Dropdown Content */}
             {safelistsExpanded && (
-              <div className="mt-2 ml-4 space-y-1 border-l border-border/50 pl-4 bg-gradient-to-br from-primary/5 to-transparent rounded-r-lg">
+              <div className="border-border/50 from-primary/5 mt-2 ml-4 space-y-1 rounded-r-lg border-l bg-gradient-to-br to-transparent pl-4">
                 {loadingSafelists ? (
-                  <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground bg-card/30 rounded-md backdrop-blur-sm">
-                    <Loader2 className="w-3 h-3 animate-spin" />
+                  <div className="text-muted-foreground bg-card/30 flex items-center gap-2 rounded-md px-3 py-2 text-sm backdrop-blur-sm">
+                    <Loader2 className="h-3 w-3 animate-spin" />
                     Loading safelists...
                   </div>
                 ) : safelists.length === 0 ? (
-                  <div className="px-3 py-2 text-sm text-muted-foreground bg-card/30 rounded-md backdrop-blur-sm">
+                  <div className="text-muted-foreground bg-card/30 rounded-md px-3 py-2 text-sm backdrop-blur-sm">
                     No safelists added yet
                   </div>
                 ) : (
@@ -184,13 +200,13 @@ export function Sidebar() {
                       href={safelist.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group hover:bg-gradient-to-br hover:from-primary/10 hover:to-primary/5 text-sm hover:shadow-md backdrop-blur-sm border border-transparent hover:border-primary/20"
+                      className="group hover:from-primary/10 hover:to-primary/5 hover:border-primary/20 flex items-center gap-3 rounded-md border border-transparent px-3 py-2 text-sm backdrop-blur-sm transition-all duration-200 hover:bg-gradient-to-br hover:shadow-md"
                     >
                       {getStatusIndicator(safelist)}
-                      <span className="flex-1 text-muted-foreground group-hover:text-white truncate font-medium">
+                      <span className="text-muted-foreground flex-1 truncate font-medium group-hover:text-white">
                         {safelist.name}
                       </span>
-                      <ExternalLink className="w-3 h-3 text-muted-foreground/50 group-hover:text-gray-300 opacity-0 group-hover:opacity-100 transition-all duration-200" />
+                      <ExternalLink className="text-muted-foreground/50 h-3 w-3 opacity-0 transition-all duration-200 group-hover:text-gray-300 group-hover:opacity-100" />
                     </a>
                   ))
                 )}
@@ -201,33 +217,39 @@ export function Sidebar() {
       </nav>
 
       {/* Enhanced Professional AI Credits Footer */}
-      <div className="p-4 border-t border-border/50 bg-gradient-to-br from-primary/5 to-transparent">
-        <div className="text-xs text-muted-foreground">
-          <div className="font-medium text-foreground bg-card/30 rounded-lg p-3 backdrop-blur-sm">
-            <div className="text-sm font-semibold mb-2">AI Credits</div>
+      <div className="border-border/50 from-primary/5 border-t bg-gradient-to-br to-transparent p-4">
+        <div className="text-muted-foreground text-xs">
+          <div className="text-foreground bg-card/30 rounded-lg p-3 font-medium backdrop-blur-sm">
+            <div className="mb-2 text-sm font-semibold">AI Credits</div>
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <span>Used today:</span>
-                <span className="text-accent font-medium bg-accent/10 px-2 py-1 rounded-md">12/50</span>
+                <span className="text-accent bg-accent/10 rounded-md px-2 py-1 font-medium">
+                  12/50
+                </span>
               </div>
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <span>Monthly limit:</span>
-                <span className="text-primary font-medium bg-primary/10 px-2 py-1 rounded-md">150/500</span>
+                <span className="text-primary bg-primary/10 rounded-md px-2 py-1 font-medium">
+                  150/500
+                </span>
               </div>
             </div>
           </div>
           {user && (
-            <div className="mt-3 bg-card/30 rounded-lg p-3 backdrop-blur-sm">
+            <div className="bg-card/30 mt-3 rounded-lg p-3 backdrop-blur-sm">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-sm" />
-                <span className="text-xs text-green-400 font-medium">Connected</span>
+                <div className="h-2 w-2 animate-pulse rounded-full bg-green-400 shadow-sm" />
+                <span className="text-xs font-medium text-green-400">
+                  Connected
+                </span>
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Sidebar;

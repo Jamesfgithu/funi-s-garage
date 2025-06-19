@@ -1,12 +1,31 @@
 'use client';
-import { SafelistLink } from "@/types/safelist";
+import { SafelistLink } from '@/types/safelist';
 import { useState, useEffect, ChangeEvent } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { Button } from "@/app/components/ui/button";
-import { Shield, Plus, Loader2, ChevronDown, CheckCircle, Clock, Save, X } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
+import {
+  Shield,
+  Plus,
+  Loader2,
+  ChevronDown,
+  CheckCircle,
+  Clock,
+  Save,
+  X,
+} from 'lucide-react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '@/app/lib/firebase/config';
-import { getUserSafelistLinks, addSafelistLink, deleteSafelistLink } from '@/app/lib/firebase/firestore';
+import {
+  getUserSafelistLinks,
+  addSafelistLink,
+  deleteSafelistLink,
+} from '@/app/lib/firebase/firestore';
 import { updateDoc, doc, Timestamp } from 'firebase/firestore';
 import { toast } from 'sonner';
 
@@ -20,7 +39,7 @@ const frequencyOptions = [
   { value: 5, label: 'Every 5 days', displayValue: '5 days' },
   { value: 6, label: 'Every 6 days', displayValue: '6 days' },
   { value: 7, label: 'Every 7 days', displayValue: '7 days' },
-  { value: 'custom', label: 'Custom', displayValue: 'custom' }
+  { value: 'custom', label: 'Custom', displayValue: 'custom' },
 ];
 
 function parseCustomFrequency(input: string) {
@@ -42,23 +61,23 @@ function formatTimeRemaining(msUntilReady: number) {
 }
 
 function calculateReadiness(link: SafelistLink) {
-    if (!link?.lastSubmitted) {
-      return { status: 'ready', daysUntilReady: 0 };
-    }
-    const lastSubmittedTime = (link.lastSubmitted as any).toDate().getTime();
-    const frequencyMs = link.frequency * 24 * 60 * 60 * 1000;
-    const readyTime = lastSubmittedTime + frequencyMs;
-    const now = Date.now();
-    const timeLeft = readyTime - now;
+  if (!link?.lastSubmitted) {
+    return { status: 'ready', daysUntilReady: 0 };
+  }
+  const lastSubmittedTime = (link.lastSubmitted as any).toDate().getTime();
+  const frequencyMs = link.frequency * 24 * 60 * 60 * 1000;
+  const readyTime = lastSubmittedTime + frequencyMs;
+  const now = Date.now();
+  const timeLeft = readyTime - now;
 
-    if (timeLeft <= 0) {
-      return { status: 'ready', daysUntilReady: 0 };
-    }
-    const oneHour = 60 * 60 * 1000;
-    if (timeLeft < oneHour) {
-      return { status: 'soon', daysUntilReady: timeLeft };
-    }
-    return { status: 'waiting', daysUntilReady: timeLeft };
+  if (timeLeft <= 0) {
+    return { status: 'ready', daysUntilReady: 0 };
+  }
+  const oneHour = 60 * 60 * 1000;
+  if (timeLeft < oneHour) {
+    return { status: 'soon', daysUntilReady: timeLeft };
+  }
+  return { status: 'waiting', daysUntilReady: timeLeft };
 }
 
 export default function SafelistManagementPage() {
@@ -89,7 +108,7 @@ export default function SafelistManagementPage() {
         setLoadingLinks(false);
       });
     } else if (!loading) {
-        setLoadingLinks(false);
+      setLoadingLinks(false);
     }
   }, [user, loading]);
 
@@ -97,7 +116,7 @@ export default function SafelistManagementPage() {
     if (!user) return;
     try {
       await deleteSafelistLink(user.uid, linkId);
-      setLinks(links.filter(link => link.id !== linkId));
+      setLinks(links.filter((link) => link.id !== linkId));
       toast.success('Safelist link deleted successfully!');
     } catch (error) {
       console.error('Delete failed:', error);
@@ -122,7 +141,7 @@ export default function SafelistManagementPage() {
     const isCustom = value === 'custom';
     setEditIsCustomSelected(isCustom);
     if (!isCustom) {
-      setEditForm({...editForm, frequency: parseFloat(value)});
+      setEditForm({ ...editForm, frequency: parseFloat(value) });
       setEditCustomFrequency('');
       setEditCustomError('');
     }
@@ -146,7 +165,7 @@ export default function SafelistManagementPage() {
     setEditCustomFrequency(value);
     const parsed = parseCustomFrequency(value);
     if (parsed !== null) {
-      setEditForm({...editForm, frequency: parsed});
+      setEditForm({ ...editForm, frequency: parsed });
       setEditCustomError('');
     } else {
       setEditCustomError('Format: "X hours" or "X days"');
@@ -167,10 +186,18 @@ export default function SafelistManagementPage() {
       createdAt: Timestamp.now(),
       userId: user.uid,
     };
-    
+
     const response = await addSafelistLink(newLinkData as any, user.uid);
     if (response.id) {
-      setLinks([...links, { ...newLinkData, id: response.id, lastSubmitted: null, updatedAt: null }]);
+      setLinks([
+        ...links,
+        {
+          ...newLinkData,
+          id: response.id,
+          lastSubmitted: null,
+          updatedAt: null,
+        },
+      ]);
       setNewLinkName('');
       setNewLinkUrl('');
       setNewLinkFrequency(7);
@@ -187,10 +214,16 @@ export default function SafelistManagementPage() {
     } else {
       setEditingLink(link);
       setEditForm({ ...link });
-      const matchingOption = frequencyOptions.find(opt => opt.value === link.frequency);
+      const matchingOption = frequencyOptions.find(
+        (opt) => opt.value === link.frequency
+      );
       setEditIsCustomSelected(!matchingOption);
       if (!matchingOption && link.frequency) {
-        setEditCustomFrequency(link.frequency < 1 ? `${link.frequency * 24} hours` : `${link.frequency} days`);
+        setEditCustomFrequency(
+          link.frequency < 1
+            ? `${link.frequency * 24} hours`
+            : `${link.frequency} days`
+        );
       } else {
         setEditCustomFrequency('');
       }
@@ -199,14 +232,28 @@ export default function SafelistManagementPage() {
 
   async function handleSaveEdit() {
     if (!editingLink || !user || !editForm) return;
-    if (editIsCustomSelected && (!!editCustomError || !editCustomFrequency.trim())) return;
-    
+    if (
+      editIsCustomSelected &&
+      (!!editCustomError || !editCustomFrequency.trim())
+    )
+      return;
+
     setSaving(true);
     try {
-      const linkRef = doc(db, 'users', user.uid, 'safelistLinks', editingLink.id);
+      const linkRef = doc(
+        db,
+        'users',
+        user.uid,
+        'safelistLinks',
+        editingLink.id
+      );
       const updatedData = { ...editForm, updatedAt: Timestamp.now() };
       await updateDoc(linkRef, updatedData as any);
-      setLinks(links.map(l => l.id === editingLink.id ? { ...l, ...updatedData } : l));
+      setLinks(
+        links.map((l) =>
+          l.id === editingLink.id ? { ...l, ...updatedData } : l
+        )
+      );
       setEditingLink(null);
       toast.success('Link updated successfully!');
     } catch (error) {
@@ -219,7 +266,10 @@ export default function SafelistManagementPage() {
 
   function getStatusInfo(link: SafelistLink) {
     const { status, daysUntilReady } = calculateReadiness(link);
-    let statusColor = '', statusIcon = null, statusText = '', pulseClass = '';
+    let statusColor = '',
+      statusIcon = null,
+      statusText = '',
+      pulseClass = '';
     switch (status) {
       case 'ready':
         statusColor = 'text-green-500';
@@ -241,114 +291,254 @@ export default function SafelistManagementPage() {
     return { statusColor, statusIcon, statusText, pulseClass };
   }
 
-  if (loading || loadingLinks) return <div className="container mx-auto p-6 flex justify-center"><Loader2 className="h-6 w-6 animate-spin" /></div>;
-  if (!user) return <div className="container mx-auto p-6"><Card><CardHeader><CardTitle>Please log in.</CardTitle></CardHeader></Card></div>;
+  if (loading || loadingLinks)
+    return (
+      <div className="container mx-auto flex justify-center p-6">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  if (!user)
+    return (
+      <div className="container mx-auto p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Please log in.</CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+    );
 
-  const selectedFrequency = frequencyOptions.find(opt => opt.value === newLinkFrequency);
-  const displayLabel = isCustomSelected ? `Custom: ${customFrequency || 'Enter...'}` : (selectedFrequency?.label || 'Every 7 days');
-  
+  const selectedFrequency = frequencyOptions.find(
+    (opt) => opt.value === newLinkFrequency
+  );
+  const displayLabel = isCustomSelected
+    ? `Custom: ${customFrequency || 'Enter...'}`
+    : selectedFrequency?.label || 'Every 7 days';
+
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Safelist Manager</h1>
           <p className="text-muted-foreground mt-2">Streamline Your Links</p>
         </div>
-        <Shield className="h-8 w-8 text-primary" />
+        <Shield className="text-primary h-8 w-8" />
       </div>
 
       <Card className="hover:border-primary">
-        <CardHeader><CardTitle>Add New Safelist Link</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Add New Safelist Link</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input type="text" placeholder="Link Name" value={newLinkName} onChange={(e) => setNewLinkName(e.target.value)} className="flex-1 p-2 border rounded bg-background" />
-              <input type="url" placeholder="Link URL" value={newLinkUrl} onChange={(e) => setNewLinkUrl(e.target.value)} className="flex-1 p-2 border rounded bg-background" />
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <input
+              type="text"
+              placeholder="Link Name"
+              value={newLinkName}
+              onChange={(e) => setNewLinkName(e.target.value)}
+              className="bg-background flex-1 rounded border p-2"
+            />
+            <input
+              type="url"
+              placeholder="Link URL"
+              value={newLinkUrl}
+              onChange={(e) => setNewLinkUrl(e.target.value)}
+              className="bg-background flex-1 rounded border p-2"
+            />
+          </div>
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="relative flex-1">
+              <Button
+                type="button"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="hover:bg-muted w-full justify-between"
+              >
+                <span className="truncate">{displayLabel}</span>
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              {dropdownOpen && (
+                <div className="bg-card absolute top-full z-10 mt-1 w-full rounded border shadow-lg">
+                  {frequencyOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() =>
+                        handleFrequencySelect(String(option.value))
+                      }
+                      className="hover:bg-muted w-full border-b p-2 text-left last:border-b-0"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Button type="button" onClick={() => setDropdownOpen(!dropdownOpen)} className="w-full justify-between hover:bg-muted">
-                  <span className="truncate">{displayLabel}</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-                {dropdownOpen && (
-                  <div className="absolute top-full w-full mt-1 bg-card border rounded shadow-lg z-10">
-                    {frequencyOptions.map((option) => (
-                      <button key={option.value} type="button" onClick={() => handleFrequencySelect(String(option.value))} className="w-full p-2 text-left hover:bg-muted border-b last:border-b-0">
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <input type="text" placeholder="Notes (optional)" value={newLinkNotes} onChange={(e) => setNewLinkNotes(e.target.value)} className="flex-1 p-2 border rounded bg-background" />
+            <input
+              type="text"
+              placeholder="Notes (optional)"
+              value={newLinkNotes}
+              onChange={(e) => setNewLinkNotes(e.target.value)}
+              className="bg-background flex-1 rounded border p-2"
+            />
+          </div>
+          {isCustomSelected && (
+            <div>
+              <input
+                type="text"
+                placeholder="e.g., '6 hours'"
+                value={customFrequency}
+                onChange={handleCustomFrequencyChange}
+                className={`w-full rounded border p-2 ${customError ? 'border-red-500' : ''}`}
+              />
+              {customError && (
+                <p className="text-sm text-red-500">{customError}</p>
+              )}
             </div>
-            {isCustomSelected && (
-              <div>
-                <input type="text" placeholder="e.g., '6 hours'" value={customFrequency} onChange={handleCustomFrequencyChange} className={`w-full p-2 border rounded ${customError ? 'border-red-500' : ''}`} />
-                {customError && <p className="text-sm text-red-500">{customError}</p>}
-              </div>
-            )}
-            <Button onClick={handleAddLink} disabled={isCustomSelected && (!!customError || !customFrequency.trim())}>
-              <Plus className="mr-2 h-4 w-4" /> Add Link
-            </Button>
+          )}
+          <Button
+            onClick={handleAddLink}
+            disabled={
+              isCustomSelected && (!!customError || !customFrequency.trim())
+            }
+          >
+            <Plus className="mr-2 h-4 w-4" /> Add Link
+          </Button>
         </CardContent>
       </Card>
 
       <div className="space-y-4">
         {links.map((link) => {
-          const { statusColor, statusIcon, statusText, pulseClass } = getStatusInfo(link);
+          const { statusColor, statusIcon, statusText, pulseClass } =
+            getStatusInfo(link);
           const isEditing = editingLink?.id === link.id;
-          const editSelectedFrequency = frequencyOptions.find(opt => opt.value === editForm.frequency);
-          const editDisplayLabel = editIsCustomSelected ? `Custom: ${editCustomFrequency || 'Enter...'}` : (editSelectedFrequency?.label || '...');
+          const editSelectedFrequency = frequencyOptions.find(
+            (opt) => opt.value === editForm.frequency
+          );
+          const editDisplayLabel = editIsCustomSelected
+            ? `Custom: ${editCustomFrequency || 'Enter...'}`
+            : editSelectedFrequency?.label || '...';
           return (
-            <Card key={link.id} className="transition-all hover:border-primary">
-              <CardHeader onClick={() => handleLinkClick(link)} className="cursor-pointer">
-                <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                            <CardTitle className="text-lg">{link.name}</CardTitle>
-                            <div className={`flex items-center gap-1 text-sm font-medium ${statusColor} ${pulseClass}`}>
-                                {statusIcon} {statusText}
-                            </div>
-                        </div>
-                        <CardDescription className="mt-1">{link.url}</CardDescription>
+            <Card key={link.id} className="hover:border-primary transition-all">
+              <CardHeader
+                onClick={() => handleLinkClick(link)}
+                className="cursor-pointer"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="text-lg">{link.name}</CardTitle>
+                      <div
+                        className={`flex items-center gap-1 text-sm font-medium ${statusColor} ${pulseClass}`}
+                      >
+                        {statusIcon} {statusText}
+                      </div>
                     </div>
-                    <Button variant="destructive" size="icon" onClick={(e) => { e.stopPropagation(); handleDelete(link.id); }}>
-                        <X className="h-4 w-4" />
-                    </Button>
+                    <CardDescription className="mt-1">
+                      {link.url}
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(link.id);
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
               </CardHeader>
               {isEditing && (
-                <CardContent className="pt-0 space-y-4">
-                  <div className="p-4 bg-muted rounded-lg space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" value={editForm.name || ''} onChange={(e) => setEditForm({...editForm, name: e.target.value})} className="w-full p-2 border rounded text-sm" placeholder="Name"/>
-                          <input type="url" value={editForm.url || ''} onChange={(e) => setEditForm({...editForm, url: e.target.value})} className="w-full p-2 border rounded text-sm" placeholder="URL"/>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="relative">
-                           <Button type="button" onClick={() => setEditDropdownOpen(!editDropdownOpen)} className="w-full justify-between text-sm">
-                              <span className="truncate">{editDisplayLabel}</span><ChevronDown className="h-4 w-4" />
-                           </Button>
-                           {editDropdownOpen && (
-                              <div className="absolute w-full mt-1 bg-card border rounded shadow-lg z-20">
-                                {frequencyOptions.map(o => <button key={o.value} type="button" onClick={() => handleEditFrequencySelect(String(o.value))} className="w-full p-2 text-left text-sm hover:bg-muted">{o.label}</button>)}
-                              </div>
-                            )}
-                        </div>
-                        <input type="text" value={editForm.notes || ''} onChange={(e) => setEditForm({...editForm, notes: e.target.value})} className="w-full p-2 border rounded text-sm" placeholder="Notes"/>
-                      </div>
-                      {editIsCustomSelected && (
-                        <div>
-                          <input type="text" value={editCustomFrequency} onChange={handleEditCustomFrequencyChange} className={`w-full p-2 border rounded text-sm ${editCustomError ? 'border-red-500' : ''}`} placeholder="e.g., '6 hours'"/>
-                          {editCustomError && <p className="text-xs text-red-500 mt-1">{editCustomError}</p>}
-                        </div>
-                      )}
-                      <div className="flex gap-2">
-                        <Button onClick={handleSaveEdit} disabled={saving} size="sm">
-                          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save
+                <CardContent className="space-y-4 pt-0">
+                  <div className="bg-muted space-y-4 rounded-lg p-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <input
+                        type="text"
+                        value={editForm.name || ''}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, name: e.target.value })
+                        }
+                        className="w-full rounded border p-2 text-sm"
+                        placeholder="Name"
+                      />
+                      <input
+                        type="url"
+                        value={editForm.url || ''}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, url: e.target.value })
+                        }
+                        className="w-full rounded border p-2 text-sm"
+                        placeholder="URL"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="relative">
+                        <Button
+                          type="button"
+                          onClick={() => setEditDropdownOpen(!editDropdownOpen)}
+                          className="w-full justify-between text-sm"
+                        >
+                          <span className="truncate">{editDisplayLabel}</span>
+                          <ChevronDown className="h-4 w-4" />
                         </Button>
+                        {editDropdownOpen && (
+                          <div className="bg-card absolute z-20 mt-1 w-full rounded border shadow-lg">
+                            {frequencyOptions.map((o) => (
+                              <button
+                                key={o.value}
+                                type="button"
+                                onClick={() =>
+                                  handleEditFrequencySelect(String(o.value))
+                                }
+                                className="hover:bg-muted w-full p-2 text-left text-sm"
+                              >
+                                {o.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
+                      <input
+                        type="text"
+                        value={editForm.notes || ''}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, notes: e.target.value })
+                        }
+                        className="w-full rounded border p-2 text-sm"
+                        placeholder="Notes"
+                      />
+                    </div>
+                    {editIsCustomSelected && (
+                      <div>
+                        <input
+                          type="text"
+                          value={editCustomFrequency}
+                          onChange={handleEditCustomFrequencyChange}
+                          className={`w-full rounded border p-2 text-sm ${editCustomError ? 'border-red-500' : ''}`}
+                          placeholder="e.g., '6 hours'"
+                        />
+                        {editCustomError && (
+                          <p className="mt-1 text-xs text-red-500">
+                            {editCustomError}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={handleSaveEdit}
+                        disabled={saving}
+                        size="sm"
+                      >
+                        {saving ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Save className="h-4 w-4" />
+                        )}{' '}
+                        Save
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               )}
