@@ -232,7 +232,7 @@
     oklch(0.7 0.15 85) 180deg 270deg,
     transparent 270deg 360deg
   );
-  -webkit-mask:
+  
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
