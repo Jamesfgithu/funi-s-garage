@@ -1,8 +1,1 @@
-{
-  "projects": {
-    "default": "safelight-ai-pro",
-    "staging": "safelight-ai-pro"
-  },
-  "targets": {},
-  "etags": {}
-}
+{"emulators":{"dataCollection":false}}
