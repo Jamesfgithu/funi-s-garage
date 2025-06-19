@@ -224,17 +224,15 @@
   inset: -4px;
   border-radius: 1rem;
   z-index: 2;
-  pointer-events: none;
-  background: conic-gradient(
+  pointer-events: none;  background: conic-gradient(
     from 0deg,
     oklch(0.7 0.15 85) 0deg 90deg,
     transparent 90deg 180deg,
     oklch(0.7 0.15 85) 180deg 270deg,
     transparent 270deg 360deg
   );
-  
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box;
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   padding: 0;
