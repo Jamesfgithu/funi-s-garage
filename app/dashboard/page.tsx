@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useHeader } from '@/app/context/HeaderContext';
-import StatCard from '@/app/components/dashboard/StatCard';
+import StatCard from '@/components/dashboard/StatCard';
 
 export default function DashboardPage() {
   const { setHeader } = useHeader();

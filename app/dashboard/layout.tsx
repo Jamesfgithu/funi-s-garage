@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from '@/app/components/layout/Header';
-import Sidebar from '@/app/components/layout/Sidebar';
+import Header from '@/components/layout/Header';
+import Sidebar from '@/components/layout/Sidebar';
 import { HeaderProvider } from '@/app/context/HeaderContext'; // Import the provider
 
 export default function DashboardLayout({

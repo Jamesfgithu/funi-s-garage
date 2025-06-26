@@ -1,5 +1,7 @@
 {
-  "files.autoSave": "afterDelay",
-  "problems.decorations.enabled": true,
-  "explorer.decorations.colors": true
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "files.autoSaveWhenNoErrors": true,
+    "terminal.integrated.cwd": "/home/jamesf/Safelist-Fresh-Start",
+    "terminal.integrated.defaultProfile.windows": "Ubuntu"
 }

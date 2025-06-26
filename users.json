@@ -1,0 +1,32 @@
+{"users": [
+{
+  "localId": "GxQ3hjjHoBNPF33DWs5zVM1t8q52",
+  "email": "temp-admin@safelistaipro.com",
+  "emailVerified": false,
+  "passwordHash": "dkrNS6pUtDMLhgFMFlKSsoDMjDm//fIwVAuSQarIxUL2WxyRb5fG0OcoaLRLKyM7LuBRf1xBPPyP+lDh2fy0IA==",
+  "salt": "E5uwxwRVk5GW5w==",
+  "lastSignedInAt": "1750624393349",
+  "createdAt": "1750623396129",
+  "disabled": false,
+  "providerUserInfo": []
+},
+{
+  "localId": "Ww6re6eqNfO3iK5IIxNJlVmHXNV2",
+  "email": "admin@jamesfunicello.net",
+  "emailVerified": true,
+  "passwordHash": "hchzSBwUX6NrumDgQW3LqoWEZ11O7aVhZIGicHwKMQ38YROZhgjVxw/mhgkNsE7NNEUzXpTL8eM7uAsbtWm9jQ==",
+  "salt": "Mh04SvbrkVdMXQ==",
+  "lastSignedInAt": "1750745189745",
+  "createdAt": "1750743337275",
+  "providerUserInfo": []
+},
+{
+  "localId": "nDQM3YMH24QibnWBok6Pzap36dX2",
+  "email": "jamesf1972@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "zKAePD/TfZ4ZS6QNLMf71WQqtGI5btiD9+lA1b1pLCl6HJ05OraHBzSFNJVCdvnESR4VdLoc3SPIU17OgA+iZg==",
+  "salt": "214rf3UBoaWnHg==",
+  "lastSignedInAt": "1750790209671",
+  "createdAt": "1750790209671",
+  "providerUserInfo": []
+}]}

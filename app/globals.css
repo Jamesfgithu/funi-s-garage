@@ -615,3 +615,13 @@
     border-color 0.2s,
     border-width 0.2s;
 }
+
+/* Global title case for all text */
+* {
+  text-transform: capitalize;
+}
+
+/* Override for specific elements that shouldn't be title case */
+code, pre, input[type="email"], input[type="password"] {
+  text-transform: none;
+}
