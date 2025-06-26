@@ -1,138 +1,372 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail as MailIconLucide, Zap, ArrowRight, Link as LinkIcon } from "lucide-react";
-import Link from "next/link";
+import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
-export default function LandingPage() {
-  const [currentYear, setCurrentYear] = useState<number | string>("...");
+const heroBg = "/funis-garage/hero-bg.jpg"; // Use JPEG
+const logo = "/funis-garage/logo.png"; // Use PNG
+const beforeImg = "/funis-garage/before.webp"; // Use WebP
+const afterImg = "/funis-garage/after.webp"; // Use WebP
 
-  useEffect(() => {
-    setCurrentYear(new Date().getFullYear());
-  }, []);
+const testimonials = [
+	{
+		name: "Sarah M.",
+		rating: 5,
+		review:
+			"Absolutely incredible! My car looks brand new. Anthony's attention to detail is unmatched. Highly recommend Funi's Garage!",
+	},
+	{
+		name: "James R.",
+		rating: 5,
+		review:
+			"The best detailing experience I've ever had. The interior and exterior both look showroom ready. Worth every penny!",
+	},
+	{
+		name: "Linda T.",
+		rating: 5,
+		review:
+			"Prompt, professional, and the results are stunning. The engine bay shine blew me away!",
+	},
+];
 
-  return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <MailIconLucide className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold text-primary">Safelist AI Pro</h1>
-          </Link>
-          <nav className="space-x-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-          </nav>
-        </div>
-      </header>
+export default function FunisGarageLanding() {
+	const [notified, setNotified] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [heroVisible, setHeroVisible] = useState(false);
+	const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
-      <main className="flex-grow">
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
-          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Revolutionize Your Safelist Marketing
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-10">
-            Safelist AI Pro empowers you with intelligent tools to organize links, craft high-converting emails, and save valuable time. Achieve peak efficiency and campaign effectiveness.
-          </p>
-          <Button size="lg" asChild className="bg-primary hover:bg-primary/90 text-primary-foreground">
-            <Link href="/signup">
-              Start Your 30-Day Free Trial <Zap className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </section>
+	// Track first interaction
+	const handleFirstInteraction = async () => {
+		if (notified || loading) return;
+		setLoading(true);
+		try {
+			await fetch("/api/notify-anthony", { method: "POST" });
+			setNotified(true);
+		} catch (e) {
+			console.log("Notify error", e);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-        <section className="bg-muted/30 py-16 sm:py-24">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 className="text-3xl font-bold text-center mb-12">Core Features</h3>
-            <div className="grid md:grid-cols-3 gap-8">
-              <Card className="border-border bg-card hover:bg-accent/5 transition-colors duration-300">
-                <CardHeader>
-                  <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
-                    <LinkIcon className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle>Safelist Link Management</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Organize your safelist links, track mailing frequencies, and never miss an opportunity with our smart readiness indicators.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border bg-card hover:bg-accent/5 transition-colors duration-300">
-                <CardHeader>
-                  <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
-                    <MailIconLucide className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle>AI-Powered Email Editor</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Craft compelling emails with our intuitive WYSIWYG editor and AI assistant. Generate headlines, body copy, and CTAs that convert.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-              
-              <Card className="border-border bg-card hover:bg-accent/5 transition-colors duration-300">
-                <CardHeader>
-                  <div className="bg-primary/10 p-3 rounded-full w-fit mb-4">
-                    <Zap className="h-8 w-8 text-primary" />
-                  </div>
-                  <CardTitle>Intelligent Automation</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>
-                    Save time and boost your ROI with AI, template management, and streamlined workflows designed for marketers.
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-        
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="bg-muted/20 rounded-lg p-8 border border-border">
-              <div className="text-center text-muted-foreground">
-                <MailIconLucide className="h-24 w-24 mx-auto mb-4 text-primary/50" />
-                <p className="text-lg">Dashboard Preview Coming Soon</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold mb-6">Your Command Center for Success</h3>
-              <p className="text-lg text-muted-foreground mb-4">
-                Our minimalist, modern interface is designed for clarity and ease of use. Focus on what matters most – growing your business.
-              </p>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex items-center">
-                  <ArrowRight className="h-5 w-5 text-primary mr-2 shrink-0" /> 
-                  Intuitive navigation and workflow.
-                </li>
-                <li className="flex items-center">
-                  <ArrowRight className="h-5 w-5 text-primary mr-2 shrink-0" /> 
-                  Mobile-responsive for marketing on the go.
-                </li>
-                <li className="flex items-center">
-                  <ArrowRight className="h-5 w-5 text-primary mr-2 shrink-0" /> 
-                  Powerful features, elegantly presented.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </main>
+	// Animate hero headline on mount
+	useEffect(() => {
+		setHeroVisible(true);
+	}, []);
 
-      <footer className="border-t border-border bg-card/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-muted-foreground">
-          <p>&copy; {currentYear} Safelist AI Pro by JNRF Marketing. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
-  );
+	// Scroll-triggered fade-in for sections
+	useEffect(() => {
+		const handleScroll = () => {
+			sectionRefs.current.forEach((ref) => {
+				if (ref) {
+					const rect = ref.getBoundingClientRect();
+					if (rect.top < window.innerHeight * 0.85) {
+						ref.classList.add("fade-in-section");
+					}
+				}
+			});
+		};
+		window.addEventListener("scroll", handleScroll, { passive: true });
+		handleScroll();
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
+
+	return (
+		<main
+			className="min-h-screen bg-black text-white flex flex-col items-center justify-start relative overflow-x-hidden"
+			onPointerDown={handleFirstInteraction}
+			onTouchStart={handleFirstInteraction}
+			onKeyDown={handleFirstInteraction}
+		>
+			{/* Parallax Hero Section */}
+			<section
+				className="w-full flex flex-col items-center justify-center pt-4 pb-10 px-2 md:px-4 relative text-center min-h-[80vh] md:min-h-[70vh]"
+				style={{
+					backgroundImage: `url(${heroBg})`,
+					backgroundSize: "cover",
+					backgroundPosition: "center",
+					backgroundAttachment: "fixed",
+				}}
+			>
+				{/* Brighten overlay */}
+				<div
+					className="absolute inset-0 z-0"
+					style={{ background: "rgba(255,255,255,0.3)" }}
+				/>
+				{/* Darken overlay for text contrast */}
+				<div className="absolute inset-0 bg-black/70 z-10" />
+				<div className="relative z-20 flex flex-col items-center gap-4 md:gap-6 w-full max-w-5xl mx-auto">
+					<Image
+						src={logo}
+						alt="Funi's Garage Logo"
+						width={220}
+						height={80}
+						className="mb-2 md:mb-4 animate-logo-fade"
+						priority
+						style={{ width: "220px", height: "auto" }}
+					/>
+					<h1
+	className="text-2xl md:text-5xl font-extrabold text-gold tracking-tight leading-tight transition-all duration-700 opacity-100 text-center whitespace-normal md:whitespace-nowrap"
+	style={{ textShadow: 'none', letterSpacing: '-0.01em' }}
+>
+	Experience Detailing That Turns Heads
+</h1>
+<h2
+	className="text-lg md:text-2xl font-semibold text-white animate-fade-in-up delay-100 subheadline-responsive mt-2 text-center"
+>
+	Handcrafted Perfection for Your Car, Every Time
+</h2>
+<p className="text-base md:text-lg text-gold font-medium animate-fade-in-up delay-200 mt-1 mb-2 text-center whitespace-normal md:whitespace-nowrap">
+	Book your appointment and see why drivers trust Funi’s Garage for a flawless finish.
+</p>
+					<button
+						className={`mt-6 md:mt-8 px-8 py-3 md:px-12 md:py-4 rounded-xl bg-cobalt text-white font-bold text-lg md:text-2xl shadow-xl border-2 border-gold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold hover:bg-cobalt-dark hover:scale-105 hover:shadow-2xl active:scale-100 active:bg-cobalt-dark animate-fade-in-up delay-300 flex items-center justify-center gap-2 ${
+							loading ? "cursor-wait" : ""
+						}`}
+						style={{ boxShadow: "0 4px 32px 0 #0033cc55" }}
+						onClick={() => window.open("tel:17168015915")}
+						disabled={loading}
+						aria-label="Call James at Funi's Garage"
+					>
+						{loading ? (
+							<span className="flex items-center gap-2">
+								<span className="inline-block w-5 h-5 border-2 border-gold border-t-transparent rounded-full animate-spin"></span>
+								Notifying...
+							</span>
+						) : notified ? (
+							<span className="text-gold">James has been notified!</span>
+						) : (
+							"Transform Your Ride"
+						)}
+					</button>
+					<div className="flex flex-col md:flex-row gap-0 md:gap-4 mt-4 items-center justify-center animate-fade-in-up delay-400">
+						<span className="text-bright-gold font-semibold text-base md:text-lg whitespace-nowrap">
+							(716) 801-5915
+						</span>
+						<span className="hidden md:inline-block text-bright-gold font-semibold text-base md:text-lg">&nbsp;|&nbsp;</span>
+						<span className="text-bright-gold font-semibold text-base md:text-lg whitespace-nowrap">
+							Serving the Eldred, PA Area
+						</span>
+					</div>
+				</div>
+			</section>
+
+			{/* Before/After Section */}
+			<section
+				ref={el => {
+					sectionRefs.current[0] = el;
+				}}
+				className="w-full max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 py-10 md:py-16 opacity-0 transition-opacity duration-1000"
+			>
+				<div className="flex-1 flex flex-col items-center">
+					<span className="text-gold font-semibold mb-2">Before</span>
+					<div className="overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 animate-card-fade">
+						<Image
+							src={beforeImg}
+							alt="Before Detailing"
+							width={800}
+							height={600}
+							className="object-cover"
+						/>
+					</div>
+				</div>
+				<div className="flex-1 flex flex-col items-center">
+					<span className="text-gold font-semibold mb-2">After</span>
+					<div className="overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 animate-card-fade">
+						<Image
+							src={afterImg}
+							alt="After Detailing"
+							width={800}
+							height={600}
+							className="object-cover"
+						/>
+					</div>
+				</div>
+			</section>
+
+			{/* Services Section */}
+			<section
+				ref={el => {
+					sectionRefs.current[1] = el;
+				}}
+				className="w-full max-w-5xl mx-auto py-8 md:py-12 px-2 md:px-4 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 opacity-0 transition-opacity duration-1000"
+			>
+				{[
+					{
+						title: "Exterior Perfection",
+						desc: "Hand wash, clay bar, polish, wax, and wheel detailing.",
+					},
+					{
+						title: "Interior Revival",
+						desc: "Deep cleaning, stain removal, leather & upholstery care.",
+					},
+					{
+						title: "Engine Bay Shine",
+						desc: "Degreasing and dressing for a spotless engine bay.",
+					},
+				].map((s, i) => (
+					<div
+						key={s.title}
+						className="bg-black/80 border-2 border-gold rounded-2xl p-6 flex flex-col items-center shadow-xl transition-transform duration-300 hover:scale-105 hover:border-cobalt animate-card-fade group"
+						style={{ transitionDelay: `${i * 100}ms` }}
+					>
+						<h3 className="text-xl md:text-2xl font-bold text-gold mb-2 drop-shadow-lg group-hover:text-cobalt transition-colors duration-300">
+							{s.title}
+						</h3>
+						<p className="text-white/80 text-center text-base md:text-lg">
+							{s.desc}
+						</p>
+					</div>
+				))}
+			</section>
+
+			{/* Testimonials Section */}
+			<section
+				ref={el => {
+					sectionRefs.current[2] = el;
+				}}
+				className="w-full max-w-4xl mx-auto py-8 md:py-14 px-2 md:px-4 flex flex-col items-center gap-8 opacity-0 transition-opacity duration-1000"
+			>
+				<h2 className="text-2xl md:text-3xl font-bold text-gold mb-2 text-center animate-fade-in-up">
+					What Our Clients Say
+				</h2>
+				<div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+					{testimonials.map((t, idx) => (
+						<div
+							key={t.name}
+							className="bg-black/80 border-2 border-gold rounded-2xl p-6 flex flex-col items-center shadow-lg transition-transform duration-300 hover:scale-105 hover:border-cobalt animate-card-fade"
+							style={{ transitionDelay: `${idx * 100}ms` }}
+						>
+							<div className="flex items-center mb-2">
+								{[...Array(t.rating)].map((_, i) => (
+									<svg
+										key={i}
+										className="w-5 h-5 text-gold"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
+									</svg>
+								))}
+							</div>
+							<p className="text-white/90 text-center mb-2">
+								"{t.review}"
+							</p>
+							<span className="text-gold font-semibold">{t.name}</span>
+						</div>
+					))}
+				</div>
+			</section>
+
+			<style jsx global>{`
+				html {
+					scroll-behavior: smooth;
+				}
+				.text-gold {
+	color: #FFD700 !important;
+	font-weight: 800;
 }
+				.bg-gradient-to-br {
+					background-image: linear-gradient(135deg, #FFD700 0%, #ffe066 60%, #fff 100%);
+				}
+				.text-bright-gold {
+					color: #ffe066 !important;
+					text-shadow: 0 1px 8px #FFD70055;
+				}
+				.bg-cobalt {
+					background: #0033cc;
+				}
+				.hover\:bg-cobalt-dark:hover {
+					background: #002299;
+				}
+				.border-gold {
+					border-color: #190f06;
+				}
+				.hover\:border-cobalt:hover {
+					border-color: #0033cc;
+				}
+				.fade-in-section {
+					opacity: 1 !important;
+				}
+				.animate-fade-in-up {
+					animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+				}
+				@keyframes fadeInUp {
+					0% {
+						opacity: 0;
+						transform: translateY(40px);
+					}
+					100% {
+						opacity: 1;
+						transform: translateY(0);
+					}
+				}
+				.animate-card-fade {
+					animation: cardFade 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+				}
+				@keyframes cardFade {
+					0% {
+						opacity: 0;
+						transform: scale(0.96);
+					}
+					100% {
+						opacity: 1;
+						transform: scale(1);
+					}
+				}
+				.animate-logo-fade {
+					animation: logoFade 1.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+				}
+				@keyframes logoFade {
+					0% {
+						opacity: 0;
+						transform: scale(0.9);
+					}
+					100% {
+						opacity: 1;
+						transform: scale(1);
+					}
+				}
+				.hero-glow {
+					text-shadow: 0 2px 16px #FFD700, 0 1px 2px #000, 0 0 2px #fff;
+				}
+				.subheadline-responsive {
+					line-height: 1.5;
+				}
+				@media (max-width: 640px) {
+					h1,
+					.text-3xl,
+					.text-4xl,
+					.text-5xl {
+						font-size: 1.5rem !important;
+					}
+					.px-8 {
+						padding-left: 1.25rem !important;
+						padding-right: 1.25rem !important;
+					}
+					.py-3 {
+						padding-top: 0.75rem !important;
+						padding-bottom: 0.75rem !important;
+					}
+					.subheadline-responsive {
+						font-size: 1.1rem !important;
+						line-height: 1.7 !important;
+					}
+					.hero-glow {
+						text-shadow: 0 2px 10px #FFD700, 0 1px 2px #000, 0 0 2px #fff;
+					}
+				}
+			`}</style>
+		</main>
+	);
+}
+
+// Tailwind custom colors (add to tailwind.config.ts):
+// gold: '#FFD700', cobalt: '#0033CC', cobalt-dark: '#002299'
+// Animations: fade-in, fade-in-up, logo-fade, card-fade, text-reveal
+// Parallax: backgroundAttachment: 'fixed' (desktop only)
+// Above-the-fold: minimal top padding, headline/CTA always visible
+// Testimonials: star SVGs, gold accents, realistic reviews
+// Button: cobalt, gold border, shadow, spinner on loading
+// Section fade-in: .fade-in-section class via scroll
+// Mobile: responsive text/button sizes, touch targets

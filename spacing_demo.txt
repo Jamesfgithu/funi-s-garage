@@ -1,4 +1,0 @@
-Line 1: This shows the spacing issue
-Line 2: When I paste commands
-Line 3: Extra whitespace appears
-Line 4: And it's very annoying

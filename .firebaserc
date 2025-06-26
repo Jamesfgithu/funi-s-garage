@@ -1,8 +1,0 @@
-{
-  "projects": {
-    "default": "safelight-ai-pro"
-  },
-  "emulators": {
-    "dataCollection": false
-  }
-}
